@@ -14,7 +14,9 @@ commands:
           name: Destroy environment
           when: on_fail
           command: |
-             sudo apt install -y awscli
+             #sudo apt install -y awscli
+             wget https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip -O awscliv2.zip
+             unzip awscliv2.zip
              echo "Destroying environment: << parameters.workflow_id >>"
              echo "ci-cd-project-backend-${CIRCLE_WORKFLOW_ID:0:7}" ${CIRCLE_WORKFLOW_ID:0:7}
              aws cloudformation delete-stack  --stack-name ci-cd-project-backend-${CIRCLE_WORKFLOW_ID:0:7} #<< parameters.workflow_id >> 
