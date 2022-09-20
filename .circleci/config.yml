@@ -11,13 +11,14 @@ commands:
          type: string
     steps:
       - run:
-          name: Destroy environments
+          name: Destroy environment
           when: on_fail
           command: |
-             echo "Destroying environment: << parameters.workflow_id >> "
-             aws cloudformation delete-stack  --stack-name ci-cd-project-backend-<<parameters.workflow_id>> 
-             aws cloudformation delete-stack  --stack-name ci-cd-frontend-<<parameters.workflow_id>> 
-             aws s3 rm s3://udapeople-<<parameters.workflow_id>> --recursive
+             echo "Destroying environment: << parameters.workflow_id >>"
+             echo "ci-cd-project-backend-${CIRCLE_WORKFLOW_ID:0:7}" ${CIRCLE_WORKFLOW_ID:0:7}
+             aws cloudformation delete-stack  --stack-name ci-cd-project-backend-${CIRCLE_WORKFLOW_ID:0:7} #<< parameters.workflow_id >> 
+             aws cloudformation delete-stack  --stack-name ci-cd-frontend-${CIRCLE_WORKFLOW_ID:0:7} #<< parameters.workflow_id >> 
+             aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} -- recursive #<<parameters.workflow_id>> --recursive
              
 #   destroy_environment2:
 #     description: Delete the font & back end stacks
