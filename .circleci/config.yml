@@ -18,8 +18,8 @@ commands:
             echo "Delete follwing:"
             echo "ci-cd-project-backend-${CIRCLE_WORKFLOW_ID:0:7}"
             echo "ci-cd-frontend-${CIRCLE_WORKFLOW_ID:0:7}"
-            aws cloudformation delete-stack --stack-name ci-cd-project-backend-${CIRCLE_WORKFLOW_ID:0:7}
-            aws cloudformation delete-stack --stack-name ci-cd-frontend-${CIRCLE_WORKFLOW_ID:0:7}
+            aws cloudformation delete-stack --stack-name ci-cd-project-backend-<<parameters.workflow_id>>
+            aws cloudformation delete-stack --stack-name ci-cd-frontend-<<parameters.workflow_id>>
             
   cancel_migrations:
     description: cancel last migration  step if successfully run in the current workflow.
@@ -189,11 +189,11 @@ jobs:
             - project/.circleci/ansible/inventory.txt
             
       - destroy_environment:
-          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
           event: on_fail
           
       - cancel_migrations:
-          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
           event: on_fail
 
   configure-infrastructure:
@@ -217,11 +217,11 @@ jobs:
             ansible-playbook -i ~/project/.circleci/ansible/inventory.txt .circleci/ansible/configure-server.yml
             
       - destroy_environment:
-          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
           event: on_fail
           
       - cancel_migrations:
-          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
           event: on_fail 
 
   run-migrations:
@@ -248,15 +248,13 @@ jobs:
             fi
             
       - destroy_environment:
-          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
           event: on_fail
           
       - cancel_migrations:
-          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
           event: on_fail   
-          
-#       - revert-migrations
-#       - destroy-environment
+
 
   deploy-frontend:
     docker:
@@ -298,11 +296,11 @@ jobs:
 #             - api_url.txt
             
       - destroy_environment:
-          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
           event: on_fail
           
       - cancel_migrations:
-          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
           event: on_fail
                     
   deploy-backend:
@@ -337,11 +335,11 @@ jobs:
             ansible-playbook -i ~/project/.circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml -vvv
             
       - destroy_environment:
-          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
           event: on_fail
           
       - cancel_migrations:
-          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
           event: on_fail
           
 #     smoke-test:
@@ -421,11 +419,11 @@ jobs:
             fi
             
       - destroy_environment:
-          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
           event: on_fail
           
       - cancel_migrations:
-          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
           event: on_fail
 
   cloudfront-update:
@@ -462,11 +460,11 @@ jobs:
             - project/oldWorkflowId.txt
             
       - destroy_environment:
-          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
           event: on_fail
           
       - cancel_migrations:
-          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
           event: on_fail
 
   cleanup:
