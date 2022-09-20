@@ -1,18 +1,6 @@
 version: 2.1
 
 commands:
-#   destroy-environment:
-#     description: Delete the font & back end stacks.
-#     parameters:  
-#     steps:
-#       - run:
-#           name: Destroy the environment 
-#           when: on_fail
-#           command: |
-#             aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-#             aws s3 rb s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --force
-#             aws cloudformation delete-stack --stack-name frontend-${CIRCLE_WORKFLOW_ID:0:7}
-#             aws cloudformation delete-stack --stack-name backend-${CIRCLE_WORKFLOW_ID:0:7}
   
   destroy_environment:
     description: Delete the font & back end stacks
@@ -52,25 +40,6 @@ commands:
               npm install
               npm run migrations:revert the successful migration
             fi          
-            
-#   revert-migrations:
-#     description: cancel last migration  step if successfully run in the current workflow.
-#     parameters:  
-#     steps:
-#       - restore_cache:
-#           keys: [backend-build]
-          
-#       - run:
-#           name: Revert migrations
-#           when: on_fail
-#           command: |
-#             SUCCESS=$(curl --insecure https://kvdb.io/4VnmEQtb22mcDLVUwHnG5q/migration_$\{CIRCLE_WORKFLOW_ID:0:7\})
-#             if [[ $SUCCESS == 1 ]];
-#             then
-#               cd ~/project/backend
-#               npm install
-#               npm run migrations:revert #revert the successful migration
-#             fi
             
 jobs:
   build-frontend:
@@ -147,7 +116,7 @@ jobs:
           command: |
              # Your code here
              cd frontend
-             npm install                                                                    #i oauth-sign
+             npm install                                                                   
              npm audit fix --audit-level=critical --force
 
   scan-backend:
@@ -163,7 +132,7 @@ jobs:
           command: |
              # Your code here
              cd backend         
-             npm install                                                                      #i
+             npm install                                                                   
              npm audit fix --audit-level=critical --force
 
   deploy-infrastructure:
