@@ -403,7 +403,7 @@ jobs:
           command: |
             export BACKEND_IP=$(tail -1 ~/project/.circleci/ansible/inventory.txt)
             export API_URL="http://${BACKEND_IP}:3030/api/status"
-            echo "API_URL: ${API_URL}"                                                      # new:  API_URL:
+            echo "API_URL: ${API_URL}"                                                      
             curl ${API_URL}
             
       - run:
@@ -412,9 +412,9 @@ jobs:
             export FRONTEND_IP="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com"
             if curl -s ${FRONTEND_IP} | grep "Welcome"
             then
-              return 0                                                                    #exit 0
+              return 1                                                                    
             else
-              return 1                                                                    #exit 1
+              return 1                                                                    
             fi
             
       - destroy_environment:
