@@ -329,8 +329,8 @@ jobs:
       - run:
           name: Deploy backend
           command: |
-            echo "Contents  of the inventory.txt file is ------"                                    # new
-            cat inventory.txt                                                                       # new    
+            echo "Contents  of the inventory.txt file is ------"                                    
+            cat ~/project/.circleci/ansible/inventory.txt                                                                       
             ansible-playbook -i ~/project/.circleci/ansible/inventory.txt .circleci/ansible/deploy-backend.yml -vvv
             
       - destroy_environment:
