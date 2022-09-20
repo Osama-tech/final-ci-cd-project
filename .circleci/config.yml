@@ -106,6 +106,7 @@ jobs:
   test-backend:
     docker:
       - image: circleci/node:13.8.0
+      
     steps:
       - checkout
       - restore_cache:
@@ -120,6 +121,7 @@ jobs:
   scan-frontend:
     docker:
       - image: circleci/node:13.8.0
+      
     steps:
       - checkout
       - restore_cache:
@@ -135,6 +137,7 @@ jobs:
   scan-backend:
     docker:
       - image: circleci/node:13.8.0
+      
     steps:
       - checkout
       - restore_cache:
@@ -150,41 +153,47 @@ jobs:
   deploy-infrastructure:
     docker:
       - image: amazon/aws-cli
+      
     steps:
       - checkout
+      - run: 
+          name: install tar & gzip
+          command: |
+            yum -y install tar
+            yum -y install gzip
+            
       - run:
           name: Ensure back-end infrastructure exists
           command: |
             aws cloudformation deploy \
-            --template-file .circleci/files/backend.yml \
-            --tags project=udapeople-proj \
-            --stack-name backend-${CIRCLE_WORKFLOW_ID:0:7} \
-            --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:7}
+                --template-file .circleci/files/backend.yml \
+                --stack-name "ci-cd-project-backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+                --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
+                --tags project=udapeople
+                
       - run:
           name: Ensure front-end infrastructure exist
           command: |
             aws cloudformation deploy \
-            --template-file .circleci/files/frontend.yml \
-            --tags project=udapeople-proj \
-            --stack-name frontend-${CIRCLE_WORKFLOW_ID:0:7} \
-            --parameter-overrides ID=${CIRCLE_WORKFLOW_ID:0:7} 
+                --template-file .circleci/files/frontend.yml \
+                --stack-name "ci-cd-frontend-${CIRCLE_WORKFLOW_ID:0:7}" \
+                --parameter-overrides ID="${CIRCLE_WORKFLOW_ID:0:7}"  \
+                --tags project=udapeople 
+                
       - run:
-          name: Add back-end ip to ansible inventory
+          name: Add EC2 instance (back-end) ip to ansible inventory
           command: |
             aws ec2 describe-instances \
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
-            --filters Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7} \
-            --output text >> .circleci/ansible/inventory.txt
-            cat .circleci/ansible/inventory.txt
-      - run:
-          name: install tar utilities
-          command: |
-            yum install -y tar gzip
+            --filters "Name=tag:Name,Values= backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+            --output text >> ./.circleci/ansible/inventory.txt
+            cat ./.circleci/ansible/inventory.txt
+            
       - persist_to_workspace:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      # Here's where you will add some code to rollback on failure      
+            
       - revert-migrations
       - destroy-environment
 
