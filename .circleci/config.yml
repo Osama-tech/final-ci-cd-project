@@ -2,7 +2,24 @@ version: 2.1
 
 commands:
   
-  destroy_environment:
+  destroy-environment:
+    description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+    parameters:
+        workflow_id:
+         type: string
+        event: 
+         type: string
+    steps:
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+             echo "Destroying environment: << parameters.workflow_id >> "
+             aws cloudformation delete-stack  --stack-name ci-cd-project-backend-<<parameters.workflow_id>> 
+             aws cloudformation delete-stack  --stack-name ci-cd-frontend-<<parameters.workflow_id>> 
+             aws s3 rm s3://udapeople-<<parameters.workflow_id>> --recursive
+             
+  destroy_environment2:
     description: Delete the font & back end stacks
     parameters:
       workflow_id: 
