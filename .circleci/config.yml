@@ -33,21 +33,22 @@ commands:
             aws cloudformation delete-stack --stack-name backend-${CIRCLE_WORKFLOW_ID:0:7}
 
   revert-migrations:
-    description: Revert the last migration if successfully run in the current workflow.
+    description: cancel last migration  step if successfully run in the current workflow.
     parameters:  
     steps:
+      - restore_cache:
+          keys: [backend-build]
+          
       - run:
           name: Revert migrations
           when: on_fail
           command: |
-            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS=$(curl -H "token: 9165e6d8-3cdf-45d3-9039-be52e27bfd76" --request GET https://api.memstash.io/values/${CIRCLE_WORKFLOW_ID:0:7})
-            echo "$SUCCESS"
-            if(( $SUCCESS==1 )); 
+            SUCCESS=$(curl --insecure https://kvdb.io/4VnmEQtb22mcDLVUwHnG5q/migration_$\{CIRCLE_WORKFLOW_ID:0:7\})
+            if [[ $SUCCESS == 1 ]];
             then
-             cd backend
-             npm install
-             npm run migrations:revert
+              cd ~/project/backend
+              npm install
+              npm run migrations:revert #revert the successful migration
             fi
             
 jobs:
@@ -150,7 +151,7 @@ jobs:
 
   deploy-infrastructure:
     docker:
-      - image: amazon/aws-cli
+      - image: amazon/aws-cl#i
       
     steps:
       - checkout
