@@ -149,6 +149,7 @@ jobs:
              # Your code here
              cd frontend
              npm install                                                                    #i oauth-sign
+             npm audit --audit-level=critical
          #    npm audit fix --audit-level=critical --force
 
   scan-backend:
@@ -165,6 +166,7 @@ jobs:
              # Your code here
              cd backend         
              npm install                                                                      #i
+             npm audit --audit-level=critical
         #     npm audit fix --audit-level=critical --force
 
   deploy-infrastructure:
