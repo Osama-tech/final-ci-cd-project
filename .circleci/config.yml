@@ -2,7 +2,7 @@ version: 2.1
 
 commands:
   
-  destroy-environment:
+  destroy_environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
         workflow_id:
@@ -19,24 +19,24 @@ commands:
              aws cloudformation delete-stack  --stack-name ci-cd-frontend-<<parameters.workflow_id>> 
              aws s3 rm s3://udapeople-<<parameters.workflow_id>> --recursive
              
-  destroy_environment2:
-    description: Delete the font & back end stacks
-    parameters:
-      workflow_id: 
-        type: string
-      event: 
-        type: string
-    steps:
-      - run:
-          name: Destroy environment << parameters.workflow_id >>
-          when: << parameters.event >>
-          command: |
-            echo "Destroying Environment# <<parameters.workflow_id>> " 
-            echo "Delete follwing:"
-            echo "ci-cd-project-backend-<<parameters.workflow_id>>"
-            echo "ci-cd-frontend-<<parameters.workflow_id>>"
-            aws cloudformation delete-stack --stack-name ci-cd-project-backend-<<parameters.workflow_id>>
-            aws cloudformation delete-stack --stack-name ci-cd-frontend-<<parameters.workflow_id>>
+#   destroy_environment2:
+#     description: Delete the font & back end stacks
+#     parameters:
+#       workflow_id: 
+#         type: string
+#       event: 
+#         type: string
+#     steps:
+#       - run:
+#           name: Destroy environment << parameters.workflow_id >>
+#           when: << parameters.event >>
+#           command: |
+#             echo "Destroying Environment# <<parameters.workflow_id>> " 
+#             echo "Delete follwing:"
+#             echo "ci-cd-project-backend-<<parameters.workflow_id>>"
+#             echo "ci-cd-frontend-<<parameters.workflow_id>>"
+#             aws cloudformation delete-stack --stack-name ci-cd-project-backend-<<parameters.workflow_id>>
+#             aws cloudformation delete-stack --stack-name ci-cd-frontend-<<parameters.workflow_id>>
             
   cancel_migrations:
     description: cancel last migration  step if successfully run in the current workflow.
