@@ -1,4 +1,8 @@
 ---
+  - name: upgrade and  update packages
+    apt: 
+     update_cache: yes
+   
   - name: "install nodejs."
     become: yes
     yum:
