@@ -5,26 +5,8 @@ commands:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:  
     steps:
-#       - run:
-#           name: Install AWS CLI if not Exist
-#           when: on_fail
-#           command: |
-#             if ! [ -x "$(command -v aws)" ]
-#             then
-#               #if no npm, then python env
-#               if ! [ -x "$(command -v npm)" ]
-#               then 
-#                 pip install awscli
-#               else
-#                 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" 
-#                 unzip awscliv2.zip 
-#                 sudo ./aws/install
-#               fi
-#             else
-#               echo "AWS CLI already installed"
-#             fi
       - run:
-          name: Destroy environment ${CIRCLE_WORKFLOW_ID:0:7}
+          name: Destroy the environment 
           when: on_fail
           command: |
             aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
@@ -186,7 +168,7 @@ jobs:
             --query 'Reservations[*].Instances[*].PublicIpAddress' \
             --filters "Name=tag:Name,Values= backend-${CIRCLE_WORKFLOW_ID:0:7}" \
             --output text >> ./.circleci/ansible/inventory.txt
-            cat ./.circleci/ansible/inventory.txttt
+            cat ./.circleci/ansible/inventory.txt
             
       - persist_to_workspace:
           root: ~/
