@@ -28,8 +28,8 @@ Resources:
       InstanceType: t2.micro
       SecurityGroups:
         - Ref: InstanceSecurityGroup
-      KeyName: final_project_keypair 
-      ImageId: ami-068663a3c619dd892                     #ami-068663a3c619dd892
+      KeyName: udacity    #final_project_keypair 
+      ImageId: ami-068663a3c619dd892                    
       Tags:
         - Key: Name
           Value: !Sub backend-${ID}
