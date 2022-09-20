@@ -398,7 +398,7 @@ jobs:
           name: Install the dependencies
           command: |
             sudo apt install curl
-            sudo apt install awscli
+            #sudo apt install awscli
             
       - attach_workspace:
           at: ~/  
