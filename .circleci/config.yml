@@ -490,7 +490,7 @@ jobs:
             --no-paginate --output text)
             
             echo $OldWorkflowID > oldWorkflowId.txt
-            cat ~/oldWorkflowId.txt 
+            cat oldWorkflowId.txt 
             
             aws cloudformation update-stack \
             --use-previous-template \
