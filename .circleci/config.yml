@@ -15,7 +15,7 @@ commands:
           when: << parameters.event >>
           command: |
             echo "Destroying Environment # << parameters.workflow_id >> " 
-            aws cloudformation delete-stack --stack-name ci-cd-backend-${CIRCLE_WORKFLOW_ID:0:7}
+            aws cloudformation delete-stack --stack-name ci-cd-project-backend-${CIRCLE_WORKFLOW_ID:0:7}
             aws cloudformation delete-stack --stack-name ci-cd-frontend-${CIRCLE_WORKFLOW_ID:0:7}
             
   cancel_migrations:
