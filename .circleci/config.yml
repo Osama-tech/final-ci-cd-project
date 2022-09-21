@@ -9,6 +9,7 @@ commands:
          type: string
         event: 
          type: string
+         
     steps:
       - run:
           name: Destroy environment
