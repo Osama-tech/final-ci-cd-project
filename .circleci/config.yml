@@ -2,25 +2,6 @@ version: 2.1
 
 commands:
 
-#   destroy_environment:
-#     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
-#     parameters:
-#         workflow_id:
-#          type: string
-#         event: 
-#          type: string
-         
-#     steps:
-#       - run:
-#           name: Destroy environment
-#           when: on_fail
-#           command: |
-#              pip install awscli
-#              echo "Destroying environment: << parameters.workflow_id >>"
-#              echo "ci-cd-project-backend-${CIRCLE_WORKFLOW_ID:0:7}" ${CIRCLE_WORKFLOW_ID:0:7}
-#              aws cloudformation delete-stack  --stack-name ci-cd-project-backend-${CIRCLE_WORKFLOW_ID:0:7} #<< parameters.workflow_id >> 
-#              aws cloudformation delete-stack  --stack-name ci-cd-frontend-${CIRCLE_WORKFLOW_ID:0:7} #<< parameters.workflow_id >> 
-#              aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} -- recursive #<<parameters.workflow_id>> --recursive
   destroy_environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
@@ -31,7 +12,7 @@ commands:
          type: string
     steps:
       - run:
-          name: Install AWS CLI if not Exist
+          name: Install AWS CLI if required
           when: on_fail
           command: |
             if ! [ -x "$(command -v aws)" ]
@@ -48,14 +29,19 @@ commands:
             else
               echo "AWS CLI already installed"
             fi
+            
       - run:
           name: Destroy environments
           when: on_fail
           command: |
+            echo "Delete the following"
+            echo "udapeople-${CIRCLE_WORKFLOW_ID:0:7}"
+            echo "ci-cd-frontend-${CIRCLE_WORKFLOW_ID:0:7} stack"
+            echo "ci-cd-project-backend-${CIRCLE_WORKFLOW_ID:0:7} stack"
             aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
             aws s3 rb s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --force
-            aws cloudformation delete-stack --stack-name frontend-${CIRCLE_WORKFLOW_ID:0:7}
-            aws cloudformation delete-stack --stack-name backend-${CIRCLE_WORKFLOW_ID:0:7}
+            aws cloudformation delete-stack --stack-name ci-cd-frontend-${CIRCLE_WORKFLOW_ID:0:7}
+            aws cloudformation delete-stack --stack-name ci-cd-project-backend-${CIRCLE_WORKFLOW_ID:0:7}
             
   cancel_migrations:
     description: cancel last migration  step if successfully run in the current workflow.
