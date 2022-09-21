@@ -345,51 +345,6 @@ jobs:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
           event: on_fail
           
-#     smoke-test:
-#     docker:
-#       - image: alpine:latest
-#     steps:
-#       - checkout
-#       - attach_workspace:
-#           at: ~/
-          
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             sudo apt-get update -y
-#             sudo apt-get install -y awscli
-            
-#       - run:
-#           name: Backend smoke test.
-#           command: |
-#             #export BACKEND_IP=$(aws ec2 describe-instances \
-#             #  --query 'Reservations[*].Instances[*].PublicIpAddress' \
-#             #  --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-#             #  --output text)
-#             #export API_URL="http://${BACKEND_IP}:3030"
-#             cat ~/api_url.txt
-#             export API_URL=$(cat ~/api_url.txt)
-#             echo "Api Url =>  ${API_URL}"
-#             if curl -s ${API_URL}/api/status | grep "ok"
-#             then
-#                 return 0
-#             else
-#                 return 1
-#             fi
-          
-#             cat ~/api_url.txt
-#             export API_URL=$(cat ~/api_url.txt)
-
-#       - run:
-#           name: Frontend smoke test.
-#           command: |
-#               if curl -s http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/#/employees | grep "Welcome"
-#               then
-#                 exit 0
-#               else
-#                 exit 1
-#               fi
-
   smoke-test:
     docker:
       - image: circleci/node:13.8.0
@@ -430,52 +385,6 @@ jobs:
       - cancel_migrations:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
           event: on_fail
-
-#   smoke-test:
-#     docker:
-#      - image: python:3.7-alpine3.11
-#     steps:
-#       - checkout
-#       - run:
-#           name: Install dependencies
-#           command: |
-#            apk add curl
-#            apk add --update nodejs npm
-#            pip3 install awscli
-#       - run:
-#           name: Backend smoke test.
-#           command: |
-#             export BACKEND_IP=$(aws ec2 describe-instances \
-#             --query 'Reservations[*].Instances[*].PublicIpAddress' \
-#             --filters "Name=tag:Name,Values= backend-${CIRCLE_WORKFLOW_ID:0:7}" \
-#             --output text)
-#             export API_URL="http://${BACKEND_IP}:3030"
-#             echo "API_URL = ${API_URL}"
-#             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
-#             cat frontend/.env
-#             echo "${API_URL}"
-#             #curl "${API_URL}/api/status" | grep "ok"
-#       - run:
-#           name: Frontend smoke test.
-#           command: |
-            
-#             URL="http://udapeople-${CIRCLE_WORKFLOW_ID:0:7}.s3-website-us-east-1.amazonaws.com/#/employees"            
-#             echo ${URL} 
-#             if curl -s ${URL} | grep "Welcome"
-#             then
-#                 # Change this to 0 after the job fails
-#               return 1
-#             else
-#               return 1
-#             fi
-            
-#       - destroy_environment: 
-#           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
-#           event: on_fail
-          
-#       - cancel_migrations:
-#           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
-#           event: on_fail
 
 
   cloudfront-update:
@@ -548,18 +457,6 @@ jobs:
               aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
               echo "Stacks deleted succesfully"
             fi
-            
-            #if [[ "${STACKS[@]}" != "${OldWorkflowID}" ]]                             # =~
-            #then
-            #  aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
-            #  aws s3 rb s3://udapeople-${OldWorkflowID} --force
-            #  aws cloudformation delete-stack --stack-name "backend-${OldWorkflowID}"
-            #  aws cloudformation delete-stack --stack-name "frontend-${OldWorkflowID}"
-            #  echo "Stacks deleted succesfully"
-           # fi
-            
-            
-            
 
 workflows:
   default:
@@ -614,24 +511,3 @@ workflows:
           filters:
             branches:
               only: [master]
-
-
-##
-#   destroy_environment2:
-#     description: Delete the font & back end stacks
-#     parameters:
-#       workflow_id: 
-#         type: string
-#       event: 
-#         type: string
-#     steps:
-#       - run:
-#           name: Destroy environment << parameters.workflow_id >>
-#           when: << parameters.event >>
-#           command: |
-#             echo "Destroying Environment# <<parameters.workflow_id>> " 
-#             echo "Delete follwing:"
-#             echo "ci-cd-project-backend-<<parameters.workflow_id>>"
-#             echo "ci-cd-frontend-<<parameters.workflow_id>>"
-#             aws cloudformation delete-stack --stack-name ci-cd-project-backend-<<parameters.workflow_id>>
-#             aws cloudformation delete-stack --stack-name ci-cd-frontend-<<parameters.workflow_id>>
