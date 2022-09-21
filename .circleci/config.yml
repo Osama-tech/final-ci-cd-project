@@ -2,25 +2,60 @@ version: 2.1
 
 commands:
 
-  destroy_environment:
+#   destroy_environment:
+#     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
+#     parameters:
+#         workflow_id:
+#          type: string
+#         event: 
+#          type: string
+         
+#     steps:
+#       - run:
+#           name: Destroy environment
+#           when: on_fail
+#           command: |
+#              pip install awscli
+#              echo "Destroying environment: << parameters.workflow_id >>"
+#              echo "ci-cd-project-backend-${CIRCLE_WORKFLOW_ID:0:7}" ${CIRCLE_WORKFLOW_ID:0:7}
+#              aws cloudformation delete-stack  --stack-name ci-cd-project-backend-${CIRCLE_WORKFLOW_ID:0:7} #<< parameters.workflow_id >> 
+#              aws cloudformation delete-stack  --stack-name ci-cd-frontend-${CIRCLE_WORKFLOW_ID:0:7} #<< parameters.workflow_id >> 
+#              aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} -- recursive #<<parameters.workflow_id>> --recursive
+  destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
-        workflow_id:
+      # Add parameter here   
+      workflow_id:
          type: string
-        event: 
+      event: 
          type: string
-         
     steps:
       - run:
-          name: Destroy environment
+          name: Install AWS CLI if not Exist
           when: on_fail
           command: |
-             pip install awscli
-             echo "Destroying environment: << parameters.workflow_id >>"
-             echo "ci-cd-project-backend-${CIRCLE_WORKFLOW_ID:0:7}" ${CIRCLE_WORKFLOW_ID:0:7}
-             aws cloudformation delete-stack  --stack-name ci-cd-project-backend-${CIRCLE_WORKFLOW_ID:0:7} #<< parameters.workflow_id >> 
-             aws cloudformation delete-stack  --stack-name ci-cd-frontend-${CIRCLE_WORKFLOW_ID:0:7} #<< parameters.workflow_id >> 
-             aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} -- recursive #<<parameters.workflow_id>> --recursive
+            if ! [ -x "$(command -v aws)" ]
+            then
+              #if no npm, then python env
+              if ! [ -x "$(command -v npm)" ]
+              then 
+                pip install awscli
+              else
+                curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" 
+                unzip awscliv2.zip 
+                sudo ./aws/install
+              fi
+            else
+              echo "AWS CLI already installed"
+            fi
+      - run:
+          name: Destroy environments
+          when: on_fail
+          command: |
+            aws s3 rm s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
+            aws s3 rb s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --force
+            aws cloudformation delete-stack --stack-name frontend-${CIRCLE_WORKFLOW_ID:0:7}
+            aws cloudformation delete-stack --stack-name backend-${CIRCLE_WORKFLOW_ID:0:7}
             
   cancel_migrations:
     description: cancel last migration  step if successfully run in the current workflow.
